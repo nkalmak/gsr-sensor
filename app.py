@@ -1,8 +1,20 @@
 from flask import Flask, render_template
+import sqlite3
+import conf
+
 
 app = Flask(__name__)
 
+
+def get_db_connection():
+    conn = sqlite3.connect(conf.DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+
 @app.route("/")
+@app.route("/data")
 def home():
     data =[
         (33,"2022-08-08 15:27:04.304805"),
@@ -23,4 +35,7 @@ def home():
     labels = [row[0] for row in data]
     values = [row[1] for row in data]
 
-    return render_template("graph.html", data=data, labels=labels, values=values)
+    return render_template("line_chart.html", data=data, labels=labels, values=values)
+
+if __name__ == '__main__':
+    app.run()
